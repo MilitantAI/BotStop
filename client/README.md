@@ -1,19 +1,19 @@
-# @militant.ai/botstop
+# botstop
 
-TypeScript/JavaScript client for the [BotStop](https://github.com) HTTP API.
+TypeScript/JavaScript client for the [BotStop](https://github.com/MilitantAI/BotStop) HTTP API.
 
 ## Install
 
 ```bash
-pnpm add @militant.ai/botstop
+pnpm add botstop
 # or
-npm install @militant.ai/botstop
+npm install botstop
 ```
 
 ## Usage
 
 ```ts
-import { BotStopClient, mountBotStopWidget } from "@militant.ai/botstop";
+import { BotStopClient, mountBotStopWidget } from "botstop";
 
 const client = new BotStopClient({
   baseUrl: "http://127.0.0.1:8787",
@@ -29,7 +29,7 @@ const result = await client.verifyChallenge(challenge.challenge_id, "4829");
 ## Drop-in widget
 
 ```ts
-import { BotStopClient, mountBotStopWidget } from "@militant.ai/botstop";
+import { BotStopClient, mountBotStopWidget } from "botstop";
 
 const client = new BotStopClient({ baseUrl: "http://127.0.0.1:8787" });
 
