@@ -65,7 +65,7 @@ Browser / any app          BotStop API (Python)         Storage
 ```
 
 - **Python package** — generator, verifier, API server
-- **`@botstop/client`** — npm/pnpm client and drop-in widget
+- **`@militant.ai/botstop`** — npm/pnpm client and drop-in widget
 - **Built-in** — refresh, TTL, rate limits, optional API key
 - **Language-agnostic** — any stack that can POST JSON and display a GIF
 
@@ -132,11 +132,11 @@ pnpm build
 Use in your app:
 
 ```bash
-pnpm add @botstop/client
+pnpm add @militant.ai/botstop
 ```
 
 ```ts
-import { BotStopClient, mountBotStopWidget } from "@botstop/client";
+import { BotStopClient, mountBotStopWidget } from "@militant.ai/botstop";
 
 const client = new BotStopClient({
   baseUrl: "http://127.0.0.1:8787",

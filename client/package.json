@@ -1,5 +1,5 @@
 {
-  "name": "@botstop/client",
+  "name": "@militant.ai/botstop",
   "version": "0.3.0",
   "description": "Language-agnostic client for the BotStop captcha HTTP API.",
   "type": "module",
