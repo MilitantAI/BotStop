@@ -2,6 +2,8 @@
 
 **Stop bots, not humans.**
 
+**[Live demo](https://militantai.github.io/BotStop/)** — try the captcha in your browser.
+
 BotStop is an anti-AI captcha where the answer lives in *motion*, not in pixels. The digits are cut from the same TV static as the background and bounced across the field. Pause on any frame and there is nothing to read — freeze time, and all discernment is lost to noise. Humans track the moving patch instinctively; bots need a persistent model that understands video, not a screenshot and an OCR pipeline.
 
 ## Why BotStop
