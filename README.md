@@ -71,53 +71,55 @@ Browser / any app          BotStop API (Python)         Storage
 - **Built-in** — refresh, TTL, rate limits, optional API key
 - **Language-agnostic** — any stack that can POST JSON and display a GIF
 
-## Install
+## Deploy
 
-### Python
+### 1. Run the API (server)
 
 ```powershell
 pip install botstop[api]
 ```
 
-### JavaScript / TypeScript
+Copy `.env.example` to `.env` and set at minimum:
 
-```bash
-npm install botstop
-# or: pnpm add botstop · yarn add botstop
-```
-
-### Development
-
-```powershell
-pip install -e ".[api,dev]"
-```
-
-```bash
-cd client && pnpm install && pnpm build
-```
-
-## Run the API
+| Variable | Production |
+|----------|------------|
+| `BOTSTOP_SECRET` | Long random string (required) |
+| `BOTSTOP_API_KEY` | Set if the API should require `X-API-Key` |
+| `BOTSTOP_CORS_ORIGINS` | Your site origin(s), e.g. `https://yourdomain.com` |
+| `BOTSTOP_HOST` | `0.0.0.0` when binding for a reverse proxy |
+| `BOTSTOP_PORT` | `8787` (or your choice) |
 
 ```powershell
-# set secrets first (see .env.example)
-botstop serve
-
-# or bind publicly
 botstop serve --host 0.0.0.0 --port 8787
 ```
 
-OpenAPI docs: `http://127.0.0.1:8787/docs`
+Put **nginx**, **Caddy**, or similar in front with HTTPS. Do not expose the API on plain HTTP in production.
 
-### Environment
+OpenAPI docs (local): `http://127.0.0.1:8787/docs`
 
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `BOTSTOP_SECRET` | `local-dev-secret` | HMAC signing key (**change in production**) |
-| `BOTSTOP_API_KEY` | _(empty)_ | Require `X-API-Key` header when set |
-| `BOTSTOP_TTL_SECONDS` | `300` | Challenge expiry |
-| `BOTSTOP_CORS_ORIGINS` | `*` | Comma-separated allowed origins |
-| `BOTSTOP_RATE_LIMIT` | `60` | Requests per IP per minute |
-| `BOTSTOP_STORAGE_DIR` | `.botstop-data` | GIF storage |
+### 2. Add the captcha (frontend)
+
+```bash
+npm install botstop
+```
+
+```ts
+import { BotStopClient, mountBotStopWidget } from "botstop";
+
+const client = new BotStopClient({
+  baseUrl: "https://api.yourdomain.com",  // your BotStop API URL
+  apiKey: import.meta.env.VITE_BOTSTOP_API_KEY,  // omit if not using API keys
+});
+
+mountBotStopWidget(client, {
+  target: document.getElementById("captcha")!,
+  onVerified: (result) => {
+    if (result.ok) submitForm();
+  },
+});
+```
+
+If the API key must stay secret, proxy `/v1/*` through your backend instead of calling the BotStop API directly from the browser.
 
 ### HTTP API
 
@@ -137,32 +139,40 @@ POST /v1/challenges/{id}/verify
 → { "ok": true, "reason": "ok" }
 ```
 
-## JavaScript / TypeScript
+### Environment (reference)
 
-```ts
-import { BotStopClient, mountBotStopWidget } from "botstop";
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `BOTSTOP_SECRET` | `local-dev-secret` | HMAC signing key |
+| `BOTSTOP_API_KEY` | _(empty)_ | Require `X-API-Key` when set |
+| `BOTSTOP_HOST` | `127.0.0.1` | Bind address |
+| `BOTSTOP_PORT` | `8787` | Bind port |
+| `BOTSTOP_TTL_SECONDS` | `300` | Challenge expiry |
+| `BOTSTOP_CORS_ORIGINS` | `*` | Comma-separated allowed origins |
+| `BOTSTOP_RATE_LIMIT` | `60` | Requests per IP per minute |
+| `BOTSTOP_STORAGE_DIR` | `.botstop-data` | GIF storage |
 
-const client = new BotStopClient({
-  baseUrl: "http://127.0.0.1:8787",
-  apiKey: import.meta.env.VITE_BOTSTOP_API_KEY,
-});
+## Production checklist
 
-mountBotStopWidget(client, {
-  target: document.getElementById("captcha")!,
-  onVerified: (result) => {
-    if (result.ok) submitForm();
-  },
-});
+1. Strong `BOTSTOP_SECRET`
+2. `BOTSTOP_CORS_ORIGINS` locked to your domain
+3. HTTPS via reverse proxy
+4. `BOTSTOP_API_KEY` set — proxy API calls if the key must not ship to the browser
+5. Never use `demo_html=True` or expose answers client-side
+
+## Development
+
+```powershell
+pip install -e ".[api,dev]"
+botstop serve
 ```
-
-## CLI (local / dev)
 
 ```powershell
 botstop generate --reveal-answer
 botstop verify --bundle outputs\<id>.bundle.json --answer 482913
 ```
 
-## Python library
+## Python library (embedded backend)
 
 Embed generation and verification in your own backend:
 
@@ -172,24 +182,6 @@ from botstop import create_captcha, verify_captcha
 result = create_captcha(demo_html=False)
 check = verify_captcha(bundle_path=result.bundle_path, submitted_answer="482913")
 ```
-
-## Production checklist
-
-1. Set a strong `BOTSTOP_SECRET`
-2. Set `BOTSTOP_API_KEY` and pass it from your frontend or backend proxy
-3. Restrict `BOTSTOP_CORS_ORIGINS` to your domain
-4. Run behind HTTPS (reverse proxy)
-5. Use `demo_html=False` — never ship answers to the browser
-6. Proxy API calls through your backend if the API key should not live in the client
-
-## Build
-
-```powershell
-python -m pip install build
-python -m build
-```
-
-Outputs land in `dist/` (wheel and sdist).
 
 ## License
 

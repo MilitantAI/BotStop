@@ -5,33 +5,20 @@ TypeScript/JavaScript client for the [BotStop](https://github.com/MilitantAI/Bot
 ## Install
 
 ```bash
-pnpm add botstop
-# or
 npm install botstop
 ```
 
 ## Usage
 
+Point `baseUrl` at your deployed BotStop API (HTTPS in production):
+
 ```ts
 import { BotStopClient, mountBotStopWidget } from "botstop";
 
 const client = new BotStopClient({
-  baseUrl: "http://127.0.0.1:8787",
+  baseUrl: "https://api.yourdomain.com",
   apiKey: process.env.BOTSTOP_API_KEY,
 });
-
-const challenge = await client.createChallenge();
-console.log(challenge.gif_url);
-
-const result = await client.verifyChallenge(challenge.challenge_id, "4829");
-```
-
-## Drop-in widget
-
-```ts
-import { BotStopClient, mountBotStopWidget } from "botstop";
-
-const client = new BotStopClient({ baseUrl: "http://127.0.0.1:8787" });
 
 mountBotStopWidget(client, {
   target: document.getElementById("captcha")!,
@@ -40,6 +27,8 @@ mountBotStopWidget(client, {
   },
 });
 ```
+
+Server setup: see the [BotStop README](https://github.com/MilitantAI/BotStop#deploy).
 
 ## API
 
