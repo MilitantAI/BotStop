@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+build/
+dist/
+*.egg-info/
+outputs/
+*.answer
+client/node_modules/
+client/dist/
+.botstop-data/
+.env

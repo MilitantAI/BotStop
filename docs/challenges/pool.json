@@ -1,0 +1,58 @@
+[
+  {
+    "id": "2XAhlQgHQtLUbtk0",
+    "answer": "3091",
+    "digit_length": 4,
+    "gif": "challenges/c0.gif",
+    "frame": "challenges/c0-f0.png"
+  },
+  {
+    "id": "CvOMOk4C7ReKh6VD",
+    "answer": "9344",
+    "digit_length": 4,
+    "gif": "challenges/c1.gif",
+    "frame": "challenges/c1-f0.png"
+  },
+  {
+    "id": "mGdWGUTyXYR-CTNQ",
+    "answer": "3394",
+    "digit_length": 4,
+    "gif": "challenges/c2.gif",
+    "frame": "challenges/c2-f0.png"
+  },
+  {
+    "id": "lVYnyRsM_vxpjlha",
+    "answer": "2560",
+    "digit_length": 4,
+    "gif": "challenges/c3.gif",
+    "frame": "challenges/c3-f0.png"
+  },
+  {
+    "id": "Myo3BMjGhbN9OJiO",
+    "answer": "2723",
+    "digit_length": 4,
+    "gif": "challenges/c4.gif",
+    "frame": "challenges/c4-f0.png"
+  },
+  {
+    "id": "3Pd1VCnmdysWdNvf",
+    "answer": "2551",
+    "digit_length": 4,
+    "gif": "challenges/c5.gif",
+    "frame": "challenges/c5-f0.png"
+  },
+  {
+    "id": "5DAffKOaFBscuPls",
+    "answer": "1025",
+    "digit_length": 4,
+    "gif": "challenges/c6.gif",
+    "frame": "challenges/c6-f0.png"
+  },
+  {
+    "id": "H5X096TCnBg8W_ke",
+    "answer": "3736",
+    "digit_length": 4,
+    "gif": "challenges/c7.gif",
+    "frame": "challenges/c7-f0.png"
+  }
+]

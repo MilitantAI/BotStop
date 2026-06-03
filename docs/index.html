@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BotStop — captcha in motion</title>
+  <meta name="description" content="Anti-AI captcha where the answer lives in motion, not pixels. Freeze time and all discernment is lost to noise.">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0c0c0c;
+      --panel: #161616;
+      --border: #2a2a2a;
+      --text: #ececec;
+      --muted: #9a9a9a;
+      --accent: #3d7eff;
+      --ok: #6dffb0;
+      --bad: #ff7b7b;
+      --warn: #f5c542;
+      font-family: "Segoe UI", system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    a { color: var(--accent); }
+
+    .wrap {
+      width: min(960px, 100%);
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+    }
+
+    header {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .eyebrow {
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      line-height: 1.15;
+      font-weight: 650;
+    }
+
+    .lead {
+      margin: 0;
+      font-size: 1.05rem;
+      color: #c8c8c8;
+      max-width: 62ch;
+    }
+
+    .grid {
+      display: grid;
+      gap: 20px;
+    }
+
+    @media (min-width: 820px) {
+      .grid.two { grid-template-columns: 1fr 1fr; }
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .panel h2 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .compare img {
+      width: 100%;
+      border-radius: 8px;
+      background: #000;
+      display: block;
+    }
+
+    .compare figcaption {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .demo-panel {
+      margin-top: 28px;
+    }
+
+    .demo-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid #444;
+      color: var(--warn);
+    }
+
+    #captcha-gif {
+      width: 100%;
+      max-width: 480px;
+      border-radius: 8px;
+      background: #000;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    input[type="text"] {
+      flex: 1 1 180px;
+      min-width: 0;
+      font: inherit;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background: #0d0d0d;
+      color: #fff;
+      letter-spacing: 0.18em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    button {
+      font: inherit;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 0;
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: transparent;
+      border: 1px solid #444;
+      color: var(--text);
+    }
+
+    #status {
+      min-height: 1.3rem;
+      font-size: 0.92rem;
+    }
+
+    .steps {
+      margin: 36px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .steps li {
+      padding-left: 1.4rem;
+      position: relative;
+      color: #ccc;
+    }
+
+    .steps li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    footer {
+      margin-top: 48px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.88rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="eyebrow">BotStop</div>
+      <h1>Stop bots, not humans.</h1>
+      <p class="lead">
+        The digits are cut from the same TV static as the background and bounced across the field.
+        Pause on any frame and there is nothing to read. Humans track the moving patch; bots need video, not OCR.
+      </p>
+    </header>
+
+    <section class="grid two" aria-label="Single frame versus motion">
+      <figure class="panel compare">
+        <h2>Single frame</h2>
+        <img id="frame-still" alt="First frame of the captcha — indistinguishable static" src="">
+        <figcaption>Freeze time. All discernment is lost to noise.</figcaption>
+      </figure>
+      <figure class="panel compare">
+        <h2>In motion</h2>
+        <img id="captcha-gif" alt="BotStop captcha animation" src="">
+        <figcaption>Watch the sequence. The answer emerges over time.</figcaption>
+      </figure>
+    </section>
+
+    <section class="panel demo-panel" aria-label="Try the demo">
+      <div class="demo-head">
+        <h2>Try it</h2>
+        <span class="badge">Demo only — answers checked in the browser</span>
+      </div>
+      <p>Watch the static, enter the four digits you see, then verify. Production sites verify server-side.</p>
+      <div class="controls">
+        <input id="answer" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" spellcheck="false" placeholder="Enter digits" maxlength="4">
+        <button type="button" id="verify">Verify</button>
+        <button type="button" id="refresh" class="secondary">New challenge</button>
+      </div>
+      <div id="status" role="status"></div>
+    </section>
+
+    <ul class="steps">
+      <li>Generate a fresh random static field for every challenge.</li>
+      <li>Cut the answer from that same field — not overlaid, the same pixels.</li>
+      <li>Move the cutout across the base static.</li>
+      <li>Verify server-side in production with TTL, rate limits, and HMAC.</li>
+    </ul>
+
+    <footer>
+      <span>MIT licensed</span>
+      <a href="https://github.com/">GitHub</a>
+      <a href="https://pypi.org/project/botstop/">PyPI</a>
+      <a href="https://www.npmjs.com/package/@botstop/client">npm</a>
+    </footer>
+  </div>
+
+  <script>
+    const frameStill = document.getElementById("frame-still");
+    const captchaGif = document.getElementById("captcha-gif");
+    const answerInput = document.getElementById("answer");
+    const statusEl = document.getElementById("status");
+    const verifyBtn = document.getElementById("verify");
+    const refreshBtn = document.getElementById("refresh");
+
+    let pool = [];
+    let index = 0;
+    let current = null;
+
+    function setStatus(text, tone) {
+      statusEl.textContent = text;
+      statusEl.style.color = tone === "ok" ? "var(--ok)" : tone === "bad" ? "var(--bad)" : "var(--warn)";
+    }
+
+    function loadChallenge(nextIndex) {
+      if (!pool.length) {
+        setStatus("Demo assets missing. Run: python scripts/build_github_demo.py", "bad");
+        return;
+      }
+      index = nextIndex % pool.length;
+      current = pool[index];
+      const cache = `?t=${Date.now()}`;
+      captchaGif.src = `${current.gif}${cache}`;
+      frameStill.src = `${current.frame}${cache}`;
+      answerInput.value = "";
+      answerInput.maxLength = current.digit_length;
+      setStatus("", "ok");
+    }
+
+    verifyBtn.addEventListener("click", () => {
+      if (!current) return;
+      const value = answerInput.value.trim().replace(/\s+/g, "");
+      if (!value) {
+        setStatus("Enter what you read.", "warn");
+        return;
+      }
+      if (value === current.answer) {
+        setStatus("Correct. You read motion, not a screenshot.", "ok");
+      } else {
+        setStatus("Not quite. Keep watching the bounce.", "bad");
+      }
+    });
+
+    refreshBtn.addEventListener("click", () => loadChallenge(index + 1));
+
+    answerInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") verifyBtn.click();
+    });
+
+    fetch("challenges/pool.json")
+      .then((response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json();
+      })
+      .then((data) => {
+        pool = data;
+        loadChallenge(Math.floor(Math.random() * pool.length));
+      })
+      .catch(() => {
+        setStatus("Could not load demo challenges. Run: python scripts/build_github_demo.py", "bad");
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "botstop"
+version = "0.3.0"
+description = "Anti-AI captcha: moving static hides a code humans read over time, not from a screenshot."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12"
+authors = [
+    { name = "BotStop contributors" },
+]
+keywords = ["captcha", "anti-bot", "static", "security", "motion"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "numpy>=1.26.0",
+    "Pillow>=10.0.0",
+    "imageio>=2.34.0",
+]
+
+[project.optional-dependencies]
+api = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+]
+dev = [
+    "build>=1.2.0",
+    "httpx>=0.27.0",
+    "pytest>=8.0.0",
+]
+
+[project.scripts]
+botstop = "botstop.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["botstop*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
