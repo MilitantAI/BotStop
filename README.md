@@ -185,28 +185,6 @@ python -m build
 
 Outputs: `dist/botstop-0.3.0-py3-none-any.whl`
 
-## GitHub Pages demo
-
-A static interactive demo lives in [`docs/`](docs/). It shows the single-frame vs in-motion comparison and lets visitors try the captcha in the browser (demo-only client-side verification). Test it yourself — take a screenshot.
-
-Regenerate challenge assets after changing captcha settings:
-
-```powershell
-python scripts/build_github_demo.py --count 8
-```
-
-Preview locally:
-
-```powershell
-cd docs
-python -m http.server 8080
-# open http://127.0.0.1:8080
-```
-
-Publish on GitHub: **Settings → Pages → Build from branch → `main` → `/docs`**.
-
-Update the footer links in `docs/index.html` once the repository URL is known.
-
 ## License
 
 MIT — see [LICENSE](LICENSE).

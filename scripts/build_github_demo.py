@@ -1,5 +1,17 @@
 #!/usr/bin/env python3
-"""Generate static assets for the GitHub Pages demo."""
+"""Generate static assets for the GitHub Pages demo in docs/.
+
+Regenerate after changing captcha settings::
+
+    python scripts/build_github_demo.py --count 8
+
+Preview locally::
+
+    cd docs && python -m http.server 8080
+
+Publish: GitHub repo Settings → Pages → branch main, folder /docs.
+Update footer links in docs/index.html when the repository URL is final.
+"""
 
 from __future__ import annotations
 

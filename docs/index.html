@@ -208,6 +208,18 @@
       gap: 12px 20px;
     }
   </style>
+  <script>
+    (function () {
+      let path = location.pathname;
+      if (!path.endsWith("/")) {
+        const leaf = path.split("/").pop() || "";
+        path = leaf.includes(".") ? path.slice(0, path.lastIndexOf("/") + 1) : `${path}/`;
+      }
+      const base = document.createElement("base");
+      base.href = path;
+      document.head.prepend(base);
+    })();
+  </script>
 </head>
 <body>
   <div class="wrap">
@@ -264,19 +276,39 @@
 
   <script>
     const frameStill = document.getElementById("frame-still");
-    const captchaGif = document.getElementById("captcha-gif");
+    let captchaGif = document.getElementById("captcha-gif");
     const answerInput = document.getElementById("answer");
     const statusEl = document.getElementById("status");
     const verifyBtn = document.getElementById("verify");
     const refreshBtn = document.getElementById("refresh");
 
+    const BLANK_GIF = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+
     let pool = [];
     let index = 0;
     let current = null;
 
+    function assetUrl(path) {
+      return new URL(path, document.baseURI).href;
+    }
+
     function setStatus(text, tone) {
       statusEl.textContent = text;
       statusEl.style.color = tone === "ok" ? "var(--ok)" : tone === "bad" ? "var(--bad)" : "var(--warn)";
+    }
+
+    function swapStillFrame(path) {
+      const url = `${assetUrl(path)}?t=${Date.now()}`;
+      frameStill.src = BLANK_GIF;
+      frameStill.src = url;
+    }
+
+    function swapAnimatedGif(path) {
+      const url = `${assetUrl(path)}?t=${Date.now()}`;
+      const replacement = captchaGif.cloneNode(false);
+      replacement.src = url;
+      captchaGif.replaceWith(replacement);
+      captchaGif = replacement;
     }
 
     function loadChallenge(nextIndex) {
@@ -284,14 +316,22 @@
         setStatus("Demo assets missing. Run: python scripts/build_github_demo.py", "bad");
         return;
       }
-      index = nextIndex % pool.length;
+      index = ((nextIndex % pool.length) + pool.length) % pool.length;
       current = pool[index];
-      const cache = `?t=${Date.now()}`;
-      captchaGif.src = `${current.gif}${cache}`;
-      frameStill.src = `${current.frame}${cache}`;
+      swapAnimatedGif(current.gif);
+      swapStillFrame(current.frame);
       answerInput.value = "";
       answerInput.maxLength = current.digit_length;
       setStatus("", "ok");
+    }
+
+    function nextRandomIndex() {
+      if (pool.length <= 1) return 0;
+      let next = index;
+      while (next === index) {
+        next = Math.floor(Math.random() * pool.length);
+      }
+      return next;
     }
 
     verifyBtn.addEventListener("click", () => {
@@ -308,13 +348,13 @@
       }
     });
 
-    refreshBtn.addEventListener("click", () => loadChallenge(index + 1));
+    refreshBtn.addEventListener("click", () => loadChallenge(nextRandomIndex()));
 
     answerInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter") verifyBtn.click();
     });
 
-    fetch("challenges/pool.json")
+    fetch(`${assetUrl("challenges/pool.json")}?t=${Date.now()}`)
       .then((response) => {
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         return response.json();
