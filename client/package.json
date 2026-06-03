@@ -1,6 +1,6 @@
 {
   "name": "botstop",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Language-agnostic client for the BotStop captcha HTTP API.",
   "type": "module",
   "main": "./dist/index.js",

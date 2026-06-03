@@ -4,6 +4,8 @@
 
 **[Live demo](https://militantai.github.io/BotStop/)** — try the captcha in your browser.
 
+**Install:** [`pip install botstop`](https://pypi.org/project/botstop/) · [`npm install botstop`](https://www.npmjs.com/package/botstop)
+
 BotStop is an anti-AI captcha where the answer lives in *motion*, not in pixels. The digits are cut from the same TV static as the background and bounced across the field. Pause on any frame and there is nothing to read — freeze time, and all discernment is lost to noise. Humans track the moving patch instinctively; bots need a persistent model that understands video, not a screenshot and an OCR pipeline.
 
 ## Why BotStop
@@ -64,18 +66,34 @@ Browser / any app          BotStop API (Python)         Storage
      |----------------------------->|                            |
 ```
 
-- **Python package** — generator, verifier, API server
-- **`botstop`** — npm/pnpm client and drop-in widget
+- **Python** ([PyPI](https://pypi.org/project/botstop/)) — generator, verifier, API server
+- **JavaScript** ([npm](https://www.npmjs.com/package/botstop)) — client and drop-in widget
 - **Built-in** — refresh, TTL, rate limits, optional API key
 - **Language-agnostic** — any stack that can POST JSON and display a GIF
 
-## Install (Python)
+## Install
+
+### Python
 
 ```powershell
 pip install botstop[api]
+```
 
-# development
+### JavaScript / TypeScript
+
+```bash
+npm install botstop
+# or: pnpm add botstop · yarn add botstop
+```
+
+### Development
+
+```powershell
 pip install -e ".[api,dev]"
+```
+
+```bash
+cd client && pnpm install && pnpm build
 ```
 
 ## Run the API
@@ -120,20 +138,6 @@ POST /v1/challenges/{id}/verify
 ```
 
 ## JavaScript / TypeScript
-
-Build the client package:
-
-```bash
-cd client
-pnpm install
-pnpm build
-```
-
-Use in your app:
-
-```bash
-pnpm add botstop
-```
 
 ```ts
 import { BotStopClient, mountBotStopWidget } from "botstop";
@@ -185,7 +189,7 @@ python -m pip install build
 python -m build
 ```
 
-Outputs: `dist/botstop-0.3.0-py3-none-any.whl`
+Outputs land in `dist/` (wheel and sdist).
 
 ## License
 

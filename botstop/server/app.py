@@ -82,7 +82,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app = FastAPI(
         title="BotStop API",
-        version="0.3.0",
+        version="0.3.1",
         description="Language-agnostic HTTP API for BotStop captcha challenges.",
     )
 
